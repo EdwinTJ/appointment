@@ -1,12 +1,39 @@
-import { Calendar } from "./components/Calender";
+// src/App.tsx
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import ServiceCards from "./components/ServiceCards";
+import { Calendar } from "./components/Calendar";
+import { CartSummary } from "./components/CartSummary";
+import { CartProvider } from "./context/CartContext";
+
+function ServicesPage() {
+  return (
+    <div className="container mx-auto p-6">
+      <div className="flex justify-end mb-6">
+        <CartSummary />
+      </div>
+      <ServiceCards />
+    </div>
+  );
+}
+
+function CalendarPage() {
+  return (
+    <div className="container mx-auto p-6">
+      <Calendar />
+    </div>
+  );
+}
+
 function App() {
   return (
-    <>
-      <main className="flex min-h-screen flex-col items-center justify-center p-24">
-        <h1 className="text-4xl font-bold mb-8">Responsive Calendar</h1>
-        <Calendar />
-      </main>
-    </>
+    <Router>
+      <CartProvider>
+        <Routes>
+          <Route path="/" element={<ServicesPage />} />
+          <Route path="/calendar" element={<CalendarPage />} />
+        </Routes>
+      </CartProvider>
+    </Router>
   );
 }
 
