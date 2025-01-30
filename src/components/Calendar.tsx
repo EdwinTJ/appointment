@@ -4,15 +4,22 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 import { availability } from "@/utils/data";
-import { TimeDisplay } from "./TImeDisplay";
+import { TimeDisplay } from "./TimeDisplay";
+import type { CartItem } from "@/context/CartContext";
 
 type CalendarProps = HTMLAttributes<HTMLDivElement> & {
   initialDate?: Date;
+  selectedTime: string | null;
+  onTimeSelect: (time: string | null) => void;
+  selectedServices: CartItem[];
 };
 
 export function Calendar({
   initialDate = new Date(),
   className,
+  selectedTime,
+  onTimeSelect,
+  selectedServices,
   ...props
 }: CalendarProps) {
   const [currentDate, setCurrentDate] = useState(initialDate);
@@ -112,7 +119,10 @@ export function Calendar({
                 hasTimeSlots &&
                   "after:absolute after:bottom-1 after:right-1 after:w-1 after:h-1 after:bg-primary after:rounded-full"
               )}
-              onClick={() => setSelectedDate(currentDateObj)}
+              onClick={() => {
+                setSelectedDate(currentDateObj);
+                onTimeSelect(null);
+              }}
             >
               {day}
             </Button>
@@ -121,7 +131,14 @@ export function Calendar({
       </div>
 
       <div className="mt-4">
-        {selectedDate && <TimeDisplay selectedDate={selectedDate} />}
+        {selectedDate && (
+          <TimeDisplay
+            selectedDate={selectedDate}
+            selectedTime={selectedTime}
+            onTimeSelect={onTimeSelect}
+            selectedServices={selectedServices}
+          />
+        )}
       </div>
     </div>
   );

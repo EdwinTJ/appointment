@@ -2,7 +2,7 @@
 import { createContext, useContext, useState, ReactNode } from "react";
 import { services, Service } from "@/utils/services";
 
-interface CartItem {
+export interface CartItem {
   serviceId: string;
   service: Service;
 }

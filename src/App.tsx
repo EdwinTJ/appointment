@@ -1,28 +1,9 @@
 // src/App.tsx
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import ServiceCards from "./components/ServiceCards";
-import { Calendar } from "./components/Calendar";
-import { CartSummary } from "./components/CartSummary";
+import { CalendarPage } from "./pages/CalendarPage";
 import { CartProvider } from "./context/CartContext";
-
-function ServicesPage() {
-  return (
-    <div className="container mx-auto p-6">
-      <div className="flex justify-end mb-6">
-        <CartSummary />
-      </div>
-      <ServiceCards />
-    </div>
-  );
-}
-
-function CalendarPage() {
-  return (
-    <div className="container mx-auto p-6">
-      <Calendar />
-    </div>
-  );
-}
+import { ServicesPage } from "./pages/ServicesPage";
+import { CheckoutPage } from "./pages/CheckoutPage";
 
 function App() {
   return (
@@ -31,6 +12,7 @@ function App() {
         <Routes>
           <Route path="/" element={<ServicesPage />} />
           <Route path="/calendar" element={<CalendarPage />} />
+          <Route path="/checkout" element={<CheckoutPage />} />
         </Routes>
       </CartProvider>
     </Router>
