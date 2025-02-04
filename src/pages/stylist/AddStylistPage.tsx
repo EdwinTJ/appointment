@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-export default function AddStylist() {
+export function AddStylist() {
   return (
     <div className="container mx-auto py-10">
       <Card className="max-w-md mx-auto">
