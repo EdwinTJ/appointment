@@ -45,7 +45,7 @@ export default function ServiceCards() {
               </div>
             )}
             <CardHeader>
-              <CardTitle className="capitalize">{serviceId}</CardTitle>
+              <CardTitle className="capitalize">{service.name}</CardTitle>
               <CardDescription>{service.description}</CardDescription>
             </CardHeader>
             <CardContent className="flex-grow">
