@@ -9,7 +9,7 @@ import { ProtectedRoute } from "./components/ProtectedRoute";
 import { AddUser } from "./pages/user/AddUserPage";
 import { AddStylist } from "./pages/stylist/AddStylistPage";
 import { AddService } from "./pages/services/AddServicePage";
-import { AddAvailabilityPage } from "./pages/AddAvailabilityPage";
+import { AddAvailabilityPage } from "./pages/availability/AddAvailabilityPage";
 function App() {
   const [isAdmin] = useState(true);
 
@@ -21,7 +21,6 @@ function App() {
           <Route path="/" element={<ServicesPage />} />
           <Route path="/calendar" element={<CalendarPage />} />
           <Route path="/checkout" element={<CheckoutPage />} />
-          <Route path="/availability" element={<AddAvailabilityPage />} />
 
           {/* Protected Routes */}
           <Route
@@ -45,6 +44,14 @@ function App() {
             element={
               <ProtectedRoute isAdmin={isAdmin}>
                 <AddService />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/availability/add"
+            element={
+              <ProtectedRoute isAdmin={isAdmin}>
+                <AddAvailabilityPage />
               </ProtectedRoute>
             }
           />
