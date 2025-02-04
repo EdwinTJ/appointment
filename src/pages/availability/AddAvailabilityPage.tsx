@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { availabilityService } from "@/services/availabilityService";
 
 type TimePeriod = "morning" | "afternoon" | "evening" | "night";
 
@@ -67,6 +68,7 @@ export function AddAvailabilityPage() {
   const [selectedTimeSlots, setSelectedTimeSlots] = useState<Set<string>>(
     new Set()
   );
+  const [isLoading, setIsLoading] = useState(false);
 
   const allTimeSlots = selectedPeriods.flatMap(generateTimeSlots);
 
@@ -77,7 +79,6 @@ export function AddAvailabilityPage() {
         : [...current, period]
     );
   };
-
   const handleTimeSlotToggle = (timeSlot: string) => {
     setSelectedTimeSlots((current) => {
       const newSet = new Set(current);
@@ -90,15 +91,29 @@ export function AddAvailabilityPage() {
     });
   };
 
-  const handleSave = () => {
-    const availability = {
-      date: selectedDate,
-      timeSlots: Array.from(selectedTimeSlots),
-    };
-    console.log("Saving availability:", availability);
-    // Add API call to save availability
-  };
+  const handleSave = async () => {
+    if (!selectedDate) return;
 
+    setIsLoading(true);
+    try {
+      const availability = {
+        date: selectedDate,
+        timeSlots: Array.from(selectedTimeSlots),
+      };
+
+      const response = await availabilityService.create(availability);
+      console.log("Saved availability:", response);
+
+      // Reset form
+      setSelectedDate(null);
+      setSelectedPeriods([]);
+      setSelectedTimeSlots(new Set());
+    } catch (error) {
+      console.error("Error saving availability:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
   return (
     <div className="container mx-auto py-8">
       <div className="max-w-4xl mx-auto space-y-6">
@@ -188,10 +203,12 @@ export function AddAvailabilityPage() {
           <CardFooter>
             <Button
               className="w-full"
-              disabled={!selectedDate || selectedTimeSlots.size === 0}
+              disabled={
+                !selectedDate || selectedTimeSlots.size === 0 || isLoading
+              }
               onClick={handleSave}
             >
-              Save Availability
+              {isLoading ? "Saving..." : "Save Availability"}
             </Button>
           </CardFooter>
         </Card>
