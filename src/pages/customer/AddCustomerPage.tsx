@@ -3,12 +3,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-export function AddUser() {
+export default function AddCustomer() {
   return (
     <div className="container mx-auto py-10">
       <Card className="max-w-md mx-auto">
         <CardHeader>
-          <CardTitle className="text-2xl font-bold text-center">User</CardTitle>
+          <CardTitle className="text-2xl font-bold text-center">
+            Add Customer
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <form className="space-y-4">
