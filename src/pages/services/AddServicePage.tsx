@@ -24,10 +24,28 @@ export function AddService() {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Service to be added:", service);
-    // Here you would typically send the data to your backend
+    try {
+      const response = await fetch("http://localhost:3000/api/services", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(service),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to create service");
+      }
+
+      const newService = await response.json();
+      console.log("Service created:", newService);
+      // Reset form or redirect as needed
+    } catch (error) {
+      console.error("Error creating service:", error);
+      // Handle error (show message to user, etc.)
+    }
   };
 
   return (
