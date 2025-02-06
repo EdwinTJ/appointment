@@ -10,6 +10,8 @@ import { AddUser } from "./pages/user/AddUserPage";
 import { AddStylist } from "./pages/stylist/AddStylistPage";
 import { AddService } from "./pages/services/AddServicePage";
 import { AddAvailabilityPage } from "./pages/availability/AddAvailabilityPage";
+import AdminHomePage from "./pages/admin/AdminHomePage";
+import AdminLayout from "./pages/admin/AdminLayout";
 function App() {
   const [isAdmin] = useState(true);
 
@@ -22,39 +24,46 @@ function App() {
           <Route path="/calendar" element={<CalendarPage />} />
           <Route path="/checkout" element={<CheckoutPage />} />
 
-          {/* Protected Routes */}
+          {/* Admin Routes */}
           <Route
-            path="/user/add"
+            path="/admin"
             element={
               <ProtectedRoute isAdmin={isAdmin}>
-                <AddUser />
+                <AdminLayout />
               </ProtectedRoute>
             }
-          />
-          <Route
-            path="/stylist/add"
-            element={
-              <ProtectedRoute isAdmin={isAdmin}>
-                <AddStylist />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/service/add"
-            element={
-              <ProtectedRoute isAdmin={isAdmin}>
-                <AddService />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/availability/add"
-            element={
-              <ProtectedRoute isAdmin={isAdmin}>
-                <AddAvailabilityPage />
-              </ProtectedRoute>
-            }
-          />
+          >
+            <Route index element={<AdminHomePage />} />
+
+            {/* Stylist Routes */}
+            <Route path="stylist/add" element={<AddStylist />} />
+            <Route path="stylist/edit" element={<div>Edit Stylist</div>} />
+            <Route path="stylist/delete" element={<div>Delete Stylist</div>} />
+
+            {/* Availability Routes */}
+            <Route path="availability/add" element={<AddAvailabilityPage />} />
+            <Route
+              path="availability/edit"
+              element={<div>Edit Availability</div>}
+            />
+            <Route
+              path="availability/delete"
+              element={<div>Delete Availability</div>}
+            />
+
+            {/* Customer Routes */}
+            <Route path="customers/add" element={<AddUser />} />
+            <Route path="customers/edit" element={<div>Edit Customer</div>} />
+            <Route
+              path="customers/delete"
+              element={<div>Delete Customer</div>}
+            />
+
+            {/* Service Routes */}
+            <Route path="services/add" element={<AddService />} />
+            <Route path="services/edit" element={<div>Edit Service</div>} />
+            <Route path="services/delete" element={<div>Delete Service</div>} />
+          </Route>
         </Routes>
       </CartProvider>
     </Router>
