@@ -4,9 +4,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-
+import { useNavigate } from "react-router-dom";
+import { Service } from "@/utils/services";
 export function AddService() {
-  const [service, setService] = useState({
+  const [service, setService] = useState<Omit<Service, "id">>({
     price: 25.0,
     name: "",
     description: "",
@@ -24,6 +25,8 @@ export function AddService() {
     }));
   };
 
+  const navigate = useNavigate();
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -34,13 +37,15 @@ export function AddService() {
         },
         body: JSON.stringify(service),
       });
+      const data = await response.json();
 
       if (!response.ok) {
         throw new Error("Failed to create service");
       }
 
-      const newService = await response.json();
-      console.log("Service created:", newService);
+      console.log("Service created:", data);
+      alert("Service created successfully");
+      navigate(`/admin`);
       // Reset form or redirect as needed
     } catch (error) {
       console.error("Error creating service:", error);
