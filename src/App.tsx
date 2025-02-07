@@ -12,6 +12,7 @@ import { AddService } from "./pages/services/AddServicePage";
 import { AddAvailabilityPage } from "./pages/availability/AddAvailabilityPage";
 import AdminHomePage from "./pages/admin/AdminHomePage";
 import AdminLayout from "./pages/admin/AdminLayout";
+import { ServicesTable } from "./pages/services/ServiceList";
 function App() {
   const [isAdmin] = useState(true);
 
@@ -60,6 +61,7 @@ function App() {
             />
 
             {/* Service Routes */}
+            <Route path="services/list" element={<ServicesTable />} />
             <Route path="services/add" element={<AddService />} />
             <Route path="services/edit" element={<div>Edit Service</div>} />
             <Route path="services/delete" element={<div>Delete Service</div>} />

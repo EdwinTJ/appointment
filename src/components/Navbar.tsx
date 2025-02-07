@@ -29,7 +29,7 @@ const navItems = [
   {
     title: "Services",
     icon: Scissors,
-    subitems: ["add", "delete", "edit"],
+    subitems: ["list", "add", "delete", "edit"],
   },
 ];
 
