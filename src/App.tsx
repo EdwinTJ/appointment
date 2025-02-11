@@ -17,7 +17,7 @@ import { StylistListPage } from "./pages/stylist/StylistListPage";
 import { AvailabilityListPage } from "./pages/availability/AvailabilityListPage";
 import { CustomerListPage } from "./pages/customer/CustomerListPage";
 import AppointmentsPage from "./pages/appointment/AppointmentsPage";
-
+import { BookingConfirmationPage } from "./pages/appointment/BookingConfirmationPage";
 function App() {
   const [isAdmin] = useState(true);
 
@@ -29,6 +29,10 @@ function App() {
           <Route path="/" element={<ServicesPage />} />
           <Route path="/calendar" element={<CalendarPage />} />
           <Route path="/checkout" element={<CheckoutPage />} />
+          <Route
+            path="/booking-confirmation/:appointmentId"
+            element={<BookingConfirmationPage />}
+          />
 
           {/* Admin Routes */}
           <Route

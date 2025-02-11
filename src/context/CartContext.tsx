@@ -1,6 +1,13 @@
 // src/context/CartContext.tsx
-import { createContext, useContext, useState, ReactNode } from "react";
-import { services, Service } from "@/utils/services";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
+import { Service } from "@/utils/services";
+import { serviceService } from "@/services/serviceService";
 
 export interface CartItem {
   serviceId: string;
@@ -9,21 +16,37 @@ export interface CartItem {
 
 interface CartContextType {
   items: CartItem[];
-  addToCart: (serviceId: string) => void;
+  addToCart: (serviceId: string) => Promise<void>;
   removeFromCart: (serviceId: string) => void;
   clearCart: () => void;
   totalPrice: number;
   totalDuration: number;
+  isLoading: boolean;
+  error: string | null;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const addToCart = (serviceId: string) => {
-    if (!items.some((item) => item.serviceId === serviceId)) {
-      setItems([...items, { serviceId, service: services[serviceId] }]);
+  const addToCart = async (serviceId: string) => {
+    if (items.some((item) => item.serviceId === serviceId)) return;
+
+    try {
+      setIsLoading(true);
+      setError(null);
+      const service = await serviceService.getServiceById(serviceId);
+      setItems([...items, { serviceId, service }]);
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "Failed to add service to cart"
+      );
+      console.error("Error adding to cart:", err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -50,6 +73,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
         clearCart,
         totalPrice,
         totalDuration,
+        isLoading,
+        error,
       }}
     >
       {children}

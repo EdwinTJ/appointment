@@ -1,4 +1,9 @@
 import { Customer, Appointment } from "../utils/booking";
+import {
+  DBAppointment,
+  TransformedAppointment,
+  AppointmentService,
+} from "../utils/appointment";
 
 const API_BASE_URL = "http://localhost:3000/api";
 
@@ -68,6 +73,50 @@ export const bookingService = {
       return response.json();
     } catch (error) {
       console.error("Error in getCustomerAppointments:", error);
+      throw error;
+    }
+  },
+
+  async getAppointmentById(
+    appointmentId: number
+  ): Promise<TransformedAppointment> {
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/appointments/${appointmentId}`
+      );
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message);
+      }
+
+      const dbAppointment: DBAppointment = await response.json();
+
+      // Transform the appointment data to match the TransformedAppointment interface
+      const transformedAppointment: TransformedAppointment = {
+        id: dbAppointment.id,
+        date: new Date(dbAppointment.appointment_date),
+        time: dbAppointment.appointment_time,
+        status: dbAppointment.status,
+        totalAmount: dbAppointment.total_amount,
+        customer: {
+          id: dbAppointment.customer_id,
+          firstName: dbAppointment.first_name,
+          lastName: dbAppointment.last_name,
+          email: dbAppointment.email,
+          phone: dbAppointment.phone,
+        },
+        services: dbAppointment.services.filter(
+          (service): service is AppointmentService =>
+            service !== null && service.id !== null
+        ),
+        createdAt: new Date(dbAppointment.created_at),
+        updatedAt: new Date(dbAppointment.updated_at),
+      };
+
+      return transformedAppointment;
+    } catch (error) {
+      console.error("Error in getAppointmentById:", error);
       throw error;
     }
   },

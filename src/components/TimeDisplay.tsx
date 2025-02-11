@@ -9,7 +9,6 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
 import type { CartItem } from "@/context/CartContext";
 
 interface TimeDisplayProps extends HTMLAttributes<HTMLDivElement> {
@@ -22,6 +21,7 @@ interface TimeDisplayProps extends HTMLAttributes<HTMLDivElement> {
     afternoon: string[];
     evening: string[];
   };
+  onConfirm: () => void;
 }
 
 export function TimeDisplay({
@@ -30,10 +30,10 @@ export function TimeDisplay({
   onTimeSelect,
   selectedServices,
   availability,
+  onConfirm,
   className,
   ...props
 }: TimeDisplayProps) {
-  const navigate = useNavigate();
   const [isConfirming, setIsConfirming] = useState(false);
 
   if (!selectedDate || !availability) return null;
@@ -98,12 +98,7 @@ export function TimeDisplay({
           </Button>
           <Button
             onClick={() => {
-              console.log("Booking confirmed:", {
-                date: selectedDate,
-                time: selectedTime,
-                services: selectedServices,
-              });
-              navigate("/checkout");
+              onConfirm();
             }}
           >
             Confirm & Pay

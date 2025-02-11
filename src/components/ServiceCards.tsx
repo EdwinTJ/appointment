@@ -1,4 +1,6 @@
-import { services } from "@/utils/services";
+import { serviceService } from "@/services/serviceService";
+import { Service } from "@/utils/services";
+import { useEffect, useState } from "react";
 import { Clock, DollarSign } from "lucide-react";
 import {
   Card,
@@ -12,7 +14,33 @@ import { Button } from "@/components/ui/button";
 import { useCart } from "../context/CartContext";
 
 export default function ServiceCards() {
-  const { items, addToCart, removeFromCart } = useCart();
+  const {
+    items,
+    addToCart,
+    removeFromCart,
+    isLoading: isCartLoading,
+  } = useCart();
+  const [services, setServices] = useState<Service[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchServices = async () => {
+      try {
+        setIsLoading(true);
+        const data = await serviceService.getAllServices();
+        setServices(data);
+      } catch (err) {
+        setError(
+          err instanceof Error ? err.message : "Failed to fetch services"
+        );
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchServices();
+  }, []);
 
   const formatDuration = (minutes: number) => {
     if (minutes < 60) return `${minutes} min`;
@@ -27,6 +55,22 @@ export default function ServiceCards() {
       currency: "USD",
     }).format(price);
   };
+
+  if (isLoading) {
+    return (
+      <div className="text-center py-8">
+        <p>Loading services...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-8 text-red-500">
+        <p>{error}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -64,11 +108,18 @@ export default function ServiceCards() {
               <Button
                 className="w-full"
                 variant={isInCart ? "secondary" : "default"}
+                disabled={isCartLoading}
                 onClick={() =>
-                  isInCart ? removeFromCart(serviceId) : addToCart(serviceId)
+                  isInCart
+                    ? removeFromCart(service.id!)
+                    : addToCart(service.id!)
                 }
               >
-                {isInCart ? "Remove" : "Book Now"}
+                {isCartLoading
+                  ? "Loading..."
+                  : isInCart
+                  ? "Remove"
+                  : "Book Now"}
               </Button>
             </CardFooter>
           </Card>

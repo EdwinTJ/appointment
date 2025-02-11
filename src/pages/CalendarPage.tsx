@@ -11,12 +11,33 @@ export function CalendarPage() {
   const navigate = useNavigate();
   const { items } = useCart();
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const stylistId = 1;
+
   // Redirect if cart is empty
   if (items.length === 0) {
     navigate("/");
     return null;
   }
+
+  const handleTimeConfirmed = () => {
+    if (!selectedDate || !selectedTime) return;
+
+    const totalAmount = items.reduce(
+      (sum, item) => sum + item.service.price,
+      0
+    );
+
+    navigate("/checkout", {
+      state: {
+        selectedDate,
+        selectedTime,
+        selectedServices: items,
+        stylistId,
+        totalAmount,
+      },
+    });
+  };
 
   return (
     <div className="container mx-auto p-6">
@@ -36,6 +57,8 @@ export function CalendarPage() {
         onTimeSelect={setSelectedTime}
         selectedServices={items}
         stylistId={stylistId}
+        onDateSelect={setSelectedDate}
+        onTimeConfirmed={handleTimeConfirmed}
       />
     </div>
   );

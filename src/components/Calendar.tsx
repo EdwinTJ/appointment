@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { TimeDisplay } from "./TimeDisplay";
 import type { CartItem } from "@/context/CartContext";
 import { availabilityService } from "@/services/availabilityService";
+import { useNavigate } from "react-router-dom";
 
 type CalendarProps = HTMLAttributes<HTMLDivElement> & {
   initialDate?: Date;
@@ -13,6 +14,8 @@ type CalendarProps = HTMLAttributes<HTMLDivElement> & {
   onTimeSelect: (time: string | null) => void;
   selectedServices: CartItem[];
   stylistId?: number;
+  onDateSelect: (date: Date | null) => void;
+  onTimeConfirmed: () => void;
 };
 
 interface AvailabilityData {
@@ -38,6 +41,7 @@ export function Calendar({
     {}
   );
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchAvailability = async () => {
@@ -122,6 +126,24 @@ export function Calendar({
     );
   };
 
+  const handleTimeConfirm = () => {
+    if (!selectedDate || !selectedTime) return;
+
+    const totalAmount = selectedServices.reduce(
+      (sum, item) => sum + item.service.price,
+      0
+    );
+
+    navigate("/checkout", {
+      state: {
+        selectedDate,
+        selectedTime,
+        selectedServices,
+        stylistId,
+        totalAmount,
+      },
+    });
+  };
   if (isLoading) {
     return <div className="text-center p-4">Loading availability...</div>;
   }
@@ -212,6 +234,7 @@ export function Calendar({
             availability={
               availabilityData[selectedDate.toISOString().split("T")[0]]
             }
+            onConfirm={handleTimeConfirm}
           />
         )}
       </div>
