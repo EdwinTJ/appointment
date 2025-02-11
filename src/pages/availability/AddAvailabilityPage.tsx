@@ -10,7 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { availabilityService } from "@/services/availabilityService";
-
+import { useNavigate } from "react-router-dom";
 type TimePeriod = "morning" | "afternoon" | "evening" | "night";
 
 interface TimeSlot {
@@ -63,6 +63,7 @@ const generateTimeSlots = (period: TimePeriod): TimeSlot[] => {
 };
 
 export function AddAvailabilityPage() {
+  const navigate = useNavigate();
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedPeriods, setSelectedPeriods] = useState<TimePeriod[]>([]);
   const [selectedTimeSlots, setSelectedTimeSlots] = useState<Set<string>>(
@@ -102,7 +103,7 @@ export function AddAvailabilityPage() {
       };
 
       const response = await availabilityService.create(availability);
-      console.log("Saved availability:", response);
+      alert(`Saved availability: ${response.id} - ${response.date}`);
 
       // Reset form
       setSelectedDate(null);
@@ -200,9 +201,16 @@ export function AddAvailabilityPage() {
               </>
             )}
           </CardContent>
-          <CardFooter>
+          <CardFooter className="flex gap-4">
             <Button
-              className="w-full"
+              className="flex-1"
+              variant="outline"
+              onClick={() => navigate("/admin/availability/list")}
+            >
+              Cancel
+            </Button>
+            <Button
+              className="flex-1"
               disabled={
                 !selectedDate || selectedTimeSlots.size === 0 || isLoading
               }

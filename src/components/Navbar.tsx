@@ -14,12 +14,12 @@ const navItems = [
   {
     title: "Stylist",
     icon: User,
-    subitems: ["add", "delete", "edit"],
+    subitems: ["list", "add", "delete", "edit"],
   },
   {
     title: "Availability",
     icon: Calendar,
-    subitems: ["add", "delete", "edit"],
+    subitems: ["list", "add", "delete", "edit"],
   },
   {
     title: "Customers",

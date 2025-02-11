@@ -8,7 +8,6 @@ import {
   CardTitle,
   CardFooter,
 } from "@/components/ui/card";
-import { availability } from "@/utils/data";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import type { CartItem } from "@/context/CartContext";
@@ -18,6 +17,11 @@ interface TimeDisplayProps extends HTMLAttributes<HTMLDivElement> {
   selectedTime: string | null;
   onTimeSelect: (time: string | null) => void;
   selectedServices: CartItem[];
+  availability?: {
+    morning: string[];
+    afternoon: string[];
+    evening: string[];
+  };
 }
 
 export function TimeDisplay({
@@ -25,16 +29,14 @@ export function TimeDisplay({
   selectedTime,
   onTimeSelect,
   selectedServices,
+  availability,
   className,
   ...props
 }: TimeDisplayProps) {
   const navigate = useNavigate();
   const [isConfirming, setIsConfirming] = useState(false);
 
-  if (!selectedDate) return null;
-
-  const dateString = selectedDate.toISOString().split("T")[0];
-  const dayAvailability = availability[dateString];
+  if (!selectedDate || !availability) return null;
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("en-US", {
@@ -96,7 +98,6 @@ export function TimeDisplay({
           </Button>
           <Button
             onClick={() => {
-              // Here you would integrate with your booking/payment system
               console.log("Booking confirmed:", {
                 date: selectedDate,
                 time: selectedTime,
@@ -108,26 +109,6 @@ export function TimeDisplay({
             Confirm & Pay
           </Button>
         </CardFooter>
-      </Card>
-    );
-  }
-
-  if (!dayAvailability) {
-    return (
-      <Card className={cn("w-full max-w-md mx-auto", className)} {...props}>
-        <CardHeader>
-          <CardTitle>
-            {selectedDate.toLocaleDateString("en-US", {
-              weekday: "long",
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            })}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-muted-foreground">No availability for this date</p>
-        </CardContent>
       </Card>
     );
   }
@@ -155,9 +136,9 @@ export function TimeDisplay({
           {periods.map((period) => (
             <div key={period} className="space-y-2">
               <h3 className="font-medium capitalize">{period}</h3>
-              {dayAvailability[period]?.length ? (
+              {availability[period]?.length > 0 ? (
                 <div className="grid grid-cols-3 gap-2">
-                  {dayAvailability[period]?.map((time) => (
+                  {availability[period].map((time) => (
                     <div
                       key={time}
                       className={cn(

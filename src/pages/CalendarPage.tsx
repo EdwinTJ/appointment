@@ -11,7 +11,7 @@ export function CalendarPage() {
   const navigate = useNavigate();
   const { items } = useCart();
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
-
+  const stylistId = 1;
   // Redirect if cart is empty
   if (items.length === 0) {
     navigate("/");
@@ -35,6 +35,7 @@ export function CalendarPage() {
         selectedTime={selectedTime}
         onTimeSelect={setSelectedTime}
         selectedServices={items}
+        stylistId={stylistId}
       />
     </div>
   );

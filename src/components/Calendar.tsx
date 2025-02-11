@@ -1,18 +1,27 @@
-import { useState, type HTMLAttributes } from "react";
+// src/components/Calendar.tsx
+import { useState, useEffect, type HTMLAttributes } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-
-import { availability } from "@/utils/data";
 import { TimeDisplay } from "./TimeDisplay";
 import type { CartItem } from "@/context/CartContext";
+import { availabilityService } from "@/services/availabilityService";
 
 type CalendarProps = HTMLAttributes<HTMLDivElement> & {
   initialDate?: Date;
   selectedTime: string | null;
   onTimeSelect: (time: string | null) => void;
   selectedServices: CartItem[];
+  stylistId?: number;
 };
+
+interface AvailabilityData {
+  [key: string]: {
+    morning: string[];
+    afternoon: string[];
+    evening: string[];
+  };
+}
 
 export function Calendar({
   initialDate = new Date(),
@@ -20,10 +29,60 @@ export function Calendar({
   selectedTime,
   onTimeSelect,
   selectedServices,
+  stylistId = 1,
   ...props
 }: CalendarProps) {
   const [currentDate, setCurrentDate] = useState(initialDate);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [availabilityData, setAvailabilityData] = useState<AvailabilityData>(
+    {}
+  );
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchAvailability = async () => {
+      try {
+        setIsLoading(true);
+        const data = await availabilityService.getAvailabilityByStylistId(
+          stylistId
+        );
+
+        // Transform the data into the format we need
+        const transformedData: AvailabilityData = {};
+
+        data.forEach((item: any) => {
+          const date = new Date(item.date);
+          const dateString = date.toISOString().split("T")[0];
+
+          // Categorize time slots into morning, afternoon, and evening
+          const timeSlots = item.timeSlots.reduce(
+            (acc: any, time: string) => {
+              const hour = parseInt(time.split(":")[0]);
+              if (hour < 12) {
+                acc.morning.push(time);
+              } else if (hour < 17) {
+                acc.afternoon.push(time);
+              } else {
+                acc.evening.push(time);
+              }
+              return acc;
+            },
+            { morning: [], afternoon: [], evening: [] }
+          );
+
+          transformedData[dateString] = timeSlots;
+        });
+
+        setAvailabilityData(transformedData);
+      } catch (error) {
+        console.error("Error fetching availability:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchAvailability();
+  }, [stylistId]);
 
   const daysInMonth = new Date(
     currentDate.getFullYear(),
@@ -53,11 +112,23 @@ export function Calendar({
 
   const hasAvailability = (date: Date) => {
     const dateString = date.toISOString().split("T")[0];
-    return dateString in availability;
+    const dayAvailability = availabilityData[dateString];
+    if (!dayAvailability) return false;
+
+    return (
+      dayAvailability.morning.length > 0 ||
+      dayAvailability.afternoon.length > 0 ||
+      dayAvailability.evening.length > 0
+    );
   };
+
+  if (isLoading) {
+    return <div className="text-center p-4">Loading availability...</div>;
+  }
 
   return (
     <div className={cn("w-full max-w-md mx-auto", className)} {...props}>
+      {/* Calendar header */}
       <div className="flex justify-between items-center mb-4">
         <Button variant="outline" size="icon" onClick={prevMonth}>
           <ChevronLeft className="h-4 w-4" />
@@ -73,6 +144,7 @@ export function Calendar({
         </Button>
       </div>
 
+      {/* Calendar grid */}
       <div className="grid grid-cols-7 gap-1 mb-2">
         {dayNames.map((day) => (
           <div
@@ -137,6 +209,9 @@ export function Calendar({
             selectedTime={selectedTime}
             onTimeSelect={onTimeSelect}
             selectedServices={selectedServices}
+            availability={
+              availabilityData[selectedDate.toISOString().split("T")[0]]
+            }
           />
         )}
       </div>

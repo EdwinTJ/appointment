@@ -12,7 +12,9 @@ import { AddService } from "./pages/services/AddServicePage";
 import { AddAvailabilityPage } from "./pages/availability/AddAvailabilityPage";
 import AdminHomePage from "./pages/admin/AdminHomePage";
 import AdminLayout from "./pages/admin/AdminLayout";
-import { ServicesTable } from "./pages/services/ServiceList";
+import { ServicesTable } from "./pages/services/ServiceListPage";
+import { StylistListPage } from "./pages/stylist/StylistListPage";
+import { AvailabilityListPage } from "./pages/availability/AvailabilityListPage";
 function App() {
   const [isAdmin] = useState(true);
 
@@ -38,11 +40,16 @@ function App() {
 
             {/* Stylist Routes */}
             <Route path="stylist/add" element={<AddStylist />} />
+            <Route path="stylist/list" element={<StylistListPage />} />
             <Route path="stylist/edit" element={<div>Edit Stylist</div>} />
             <Route path="stylist/delete" element={<div>Delete Stylist</div>} />
 
             {/* Availability Routes */}
             <Route path="availability/add" element={<AddAvailabilityPage />} />
+            <Route
+              path="availability/list"
+              element={<AvailabilityListPage />}
+            />
             <Route
               path="availability/edit"
               element={<div>Edit Availability</div>}
