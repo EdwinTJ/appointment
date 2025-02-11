@@ -15,6 +15,9 @@ import AdminLayout from "./pages/admin/AdminLayout";
 import { ServicesTable } from "./pages/services/ServiceListPage";
 import { StylistListPage } from "./pages/stylist/StylistListPage";
 import { AvailabilityListPage } from "./pages/availability/AvailabilityListPage";
+
+import AppointmentsPage from "./pages/appointment/AppointmentsPage";
+
 function App() {
   const [isAdmin] = useState(true);
 
@@ -65,6 +68,11 @@ function App() {
             <Route
               path="customers/delete"
               element={<div>Delete Customer</div>}
+            />
+            {/* Appointments Routes */}
+            <Route
+              path="appointments/list"
+              element={<AppointmentsPage stylistId="1" />}
             />
 
             {/* Service Routes */}

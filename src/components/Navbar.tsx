@@ -31,6 +31,11 @@ const navItems = [
     icon: Scissors,
     subitems: ["list", "add", "delete", "edit"],
   },
+  {
+    title: "Appointments",
+    icon: Calendar,
+    subitems: ["list", "add", "delete", "edit"],
+  },
 ];
 
 interface NavbarProps {
