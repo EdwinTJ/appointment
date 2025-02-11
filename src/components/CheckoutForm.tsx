@@ -47,7 +47,7 @@ export function CheckoutForm({
         status: "pending",
         totalAmount,
         services: selectedServices.map((item) => ({
-          serviceId: parseInt(item.serviceId),
+          serviceId: item.serviceId,
           price: item.service.price,
         })),
       });

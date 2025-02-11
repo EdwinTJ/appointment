@@ -1,11 +1,5 @@
 // src/context/CartContext.tsx
-import {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  ReactNode,
-} from "react";
+import { createContext, useContext, useState, ReactNode } from "react";
 import { Service } from "@/utils/services";
 import { serviceService } from "@/services/serviceService";
 

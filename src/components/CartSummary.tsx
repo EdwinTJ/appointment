@@ -63,7 +63,7 @@ export function CartSummary() {
                     className="flex items-center justify-between bg-secondary/50 p-3 rounded-lg"
                   >
                     <div className="flex-grow">
-                      <h4 className="font-medium capitalize">{serviceId}</h4>
+                      <h4 className="font-medium capitalize">{service.name}</h4>
                       <div className="flex items-center space-x-4 text-sm text-muted-foreground">
                         <span>{formatPrice(service.price)}</span>
                         <div className="flex items-center space-x-1">

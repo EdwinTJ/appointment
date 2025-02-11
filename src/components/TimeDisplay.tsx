@@ -71,7 +71,7 @@ export function TimeDisplay({
               <div className="space-y-2 mt-2">
                 {selectedServices.map(({ serviceId, service }) => (
                   <div key={serviceId} className="flex justify-between text-sm">
-                    <span className="capitalize">{serviceId}</span>
+                    <span className="capitalize">{service.name}</span>
                     <span>{formatPrice(service.price)}</span>
                   </div>
                 ))}

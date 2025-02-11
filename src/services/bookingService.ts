@@ -35,7 +35,7 @@ export const bookingService = {
 
   // Create new appointment
   async createAppointment(
-    appointmentData: Omit<Appointment, "id">
+    appointmentData: Omit<TransformedAppointment, "id">
   ): Promise<Appointment> {
     try {
       const response = await fetch(`${API_BASE_URL}/appointments`, {
@@ -84,7 +84,6 @@ export const bookingService = {
       const response = await fetch(
         `${API_BASE_URL}/appointments/${appointmentId}`
       );
-
       if (!response.ok) {
         const error = await response.json();
         throw new Error(error.message);
@@ -98,7 +97,7 @@ export const bookingService = {
         date: new Date(dbAppointment.appointment_date),
         time: dbAppointment.appointment_time,
         status: dbAppointment.status,
-        totalAmount: dbAppointment.total_amount,
+        totalAmount: parseFloat(dbAppointment.total_amount),
         customer: {
           id: dbAppointment.customer_id,
           firstName: dbAppointment.first_name,
@@ -106,10 +105,11 @@ export const bookingService = {
           email: dbAppointment.email,
           phone: dbAppointment.phone,
         },
-        services: dbAppointment.services.filter(
-          (service): service is AppointmentService =>
-            service !== null && service.id !== null
-        ),
+        services:
+          dbAppointment.services?.filter(
+            (service): service is AppointmentService =>
+              service !== null && service.id !== null
+          ) || [],
         createdAt: new Date(dbAppointment.created_at),
         updatedAt: new Date(dbAppointment.updated_at),
       };

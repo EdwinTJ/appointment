@@ -1,10 +1,10 @@
 export interface AppointmentService {
-  id?: number;
-  appointmentId: number;
+  id: number;
   serviceId: string; // UUID
+  serviceName: string;
   price: number;
-  createdAt?: Date;
 }
+
 export interface AppointmentCustomer {
   id: number;
   firstName: string;
@@ -17,12 +17,12 @@ export interface DBAppointment {
   id: number;
   customer_id: number;
   stylist_id: number;
-  appointment_date: Date;
+  appointment_date: string;
   appointment_time: string;
   status: "pending" | "confirmed" | "completed" | "cancelled";
-  total_amount: number;
-  created_at: Date;
-  updated_at: Date;
+  total_amount: string;
+  created_at: string;
+  updated_at: string;
   first_name: string;
   last_name: string;
   email: string;
@@ -36,7 +36,13 @@ export interface TransformedAppointment {
   time: string;
   status: "pending" | "confirmed" | "completed" | "cancelled";
   totalAmount: number;
-  customer: AppointmentCustomer;
+  customer: {
+    id: number;
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone: string;
+  };
   services: AppointmentService[];
   createdAt: Date;
   updatedAt: Date;

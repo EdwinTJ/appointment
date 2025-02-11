@@ -132,7 +132,7 @@ export function BookingConfirmationPage() {
                     key={service.id}
                     className="flex justify-between text-sm text-muted-foreground"
                   >
-                    <span className="capitalize">{service.serviceId}</span>
+                    <span className="capitalize">{service.serviceName}</span>
                     <span>{formatPrice(service.price)}</span>
                   </div>
                 ))}
