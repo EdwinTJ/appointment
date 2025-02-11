@@ -9,6 +9,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import { PlusCircle, Pencil, Trash2 } from "lucide-react";
+
 import { availabilityService } from "@/services/availabilityService";
 import { useNavigate } from "react-router-dom";
 
@@ -59,7 +61,7 @@ export function AvailabilityListPage() {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Availabilities</h1>
         <Button onClick={() => navigate("/admin/availability/add")}>
-          Add New Availability
+          <PlusCircle className="mr-2 h-4 w-4" /> Add New Availability
         </Button>
       </div>
 
@@ -86,14 +88,16 @@ export function AvailabilityListPage() {
                     navigate(`/admin/availability/edit/${availability.id}`)
                   }
                 >
-                  Edit
+                  <Pencil className="h-4 w-4" />
+                  <span className="sr-only">Edit</span>
                 </Button>
                 <Button
                   variant="destructive"
                   size="sm"
                   onClick={() => handleDelete(availability.id)}
                 >
-                  Delete
+                  <Trash2 className="h-4 w-4" />
+                  <span className="sr-only">Delete</span>
                 </Button>
               </TableCell>
             </TableRow>

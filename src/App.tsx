@@ -15,7 +15,7 @@ import AdminLayout from "./pages/admin/AdminLayout";
 import { ServicesTable } from "./pages/services/ServiceListPage";
 import { StylistListPage } from "./pages/stylist/StylistListPage";
 import { AvailabilityListPage } from "./pages/availability/AvailabilityListPage";
-
+import { CustomerListPage } from "./pages/customer/CustomerListPage";
 import AppointmentsPage from "./pages/appointment/AppointmentsPage";
 
 function App() {
@@ -64,6 +64,7 @@ function App() {
 
             {/* Customer Routes */}
             <Route path="customers/add" element={<AddUser />} />
+            <Route path="customers/list" element={<CustomerListPage />} />
             <Route path="customers/edit" element={<div>Edit Customer</div>} />
             <Route
               path="customers/delete"

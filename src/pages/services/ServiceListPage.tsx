@@ -173,7 +173,7 @@ export function ServicesTable() {
                 </TableCell>
                 <TableCell className="text-right">
                   <Button
-                    variant="ghost"
+                    variant="outline"
                     size="sm"
                     className="mr-2"
                     onClick={() => handleEdit(service.id!)}
@@ -182,7 +182,7 @@ export function ServicesTable() {
                     <span className="sr-only">Edit {service.name}</span>
                   </Button>
                   <Button
-                    variant="ghost"
+                    variant="destructive"
                     size="sm"
                     onClick={() => setDeleteId(service.id!)}
                   >

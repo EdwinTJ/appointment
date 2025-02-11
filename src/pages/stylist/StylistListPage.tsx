@@ -162,7 +162,7 @@ export function StylistListPage() {
                 <TableCell></TableCell>
                 <TableCell className="text-right">
                   <Button
-                    variant="ghost"
+                    variant="outline"
                     size="sm"
                     className="mr-2"
                     onClick={() => handleEdit(stylist.id!)}
@@ -171,7 +171,7 @@ export function StylistListPage() {
                     <span className="sr-only">Edit {stylist.firstName}</span>
                   </Button>
                   <Button
-                    variant="ghost"
+                    variant="destructive"
                     size="sm"
                     onClick={() => setDeleteId(stylist.id!)}
                   >

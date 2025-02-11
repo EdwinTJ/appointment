@@ -24,7 +24,7 @@ const navItems = [
   {
     title: "Customers",
     icon: Users,
-    subitems: ["add", "delete", "edit"],
+    subitems: ["list", "add", "delete", "edit"],
   },
   {
     title: "Services",

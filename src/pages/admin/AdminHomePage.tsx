@@ -1,7 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-
+import { useNavigate } from "react-router-dom";
 export default function AdminHome() {
+  const navigate = useNavigate();
   return (
     <div className="space-y-6">
       <h1 className="text-center text-3xl font-bold">
@@ -13,7 +14,9 @@ export default function AdminHome() {
           <CardTitle>Want to see your next appointments?</CardTitle>
         </CardHeader>
         <CardContent>
-          <Button>View Appointments</Button>
+          <Button onClick={() => navigate("/admin/appointments/list")}>
+            View Appointments
+          </Button>
         </CardContent>
       </Card>
 
