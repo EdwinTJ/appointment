@@ -22,6 +22,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useNavigate } from "react-router-dom";
+import { serviceService } from "@/services/serviceService";
 
 export function ServicesTable() {
   const [services, setServices] = useState<Service[]>([]);
@@ -34,19 +35,13 @@ export function ServicesTable() {
     try {
       setIsLoading(true);
       setError(null);
-      const response = await fetch("http://localhost:3000/api/services", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await serviceService.getAllServices();
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+      if (!response) {
+        throw new Error(`HTTP error! status: ${error}`);
       }
 
-      const data = await response.json();
-      setServices(data);
+      setServices(response);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to fetch services");
       console.error("Error fetching services:", err);
@@ -78,9 +73,7 @@ export function ServicesTable() {
     if (!deleteId) return;
 
     try {
-      const response = await fetch(`/api/services/${deleteId}`, {
-        method: "DELETE",
-      });
+      const response = await serviceService.deleteService(deleteId);
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);

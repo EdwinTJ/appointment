@@ -28,4 +28,18 @@ export const serviceService = {
       throw error;
     }
   },
+
+  async deleteService(id: string): Promise<void> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/services/${id}`, {
+        method: "DELETE",
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+    } catch (error) {
+      console.error("Error deleting service:", error);
+      throw error;
+    }
+  },
 };
