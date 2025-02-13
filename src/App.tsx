@@ -18,6 +18,7 @@ import { AvailabilityListPage } from "./pages/availability/AvailabilityListPage"
 import { CustomerListPage } from "./pages/customer/CustomerListPage";
 import AppointmentsPage from "./pages/appointment/AppointmentsPage";
 import { BookingConfirmationPage } from "./pages/appointment/BookingConfirmationPage";
+import { EditServicePage } from "./pages/services/EditServicePage";
 function App() {
   const [isAdmin] = useState(true);
 
@@ -83,7 +84,7 @@ function App() {
             {/* Service Routes */}
             <Route path="services/list" element={<ServicesTable />} />
             <Route path="services/add" element={<AddService />} />
-            <Route path="services/edit" element={<div>Edit Service</div>} />
+            <Route path="services/edit/:id" element={<EditServicePage />} />
             <Route path="services/delete" element={<div>Delete Service</div>} />
           </Route>
         </Routes>

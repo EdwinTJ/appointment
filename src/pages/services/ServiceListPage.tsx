@@ -66,7 +66,7 @@ export function ServicesTable() {
 
   const handleEdit = useCallback((serviceId: string) => {
     // Navigate to edit page or open modal
-    navigate(`/services/edit/${serviceId}`);
+    navigate(`/admin/services/edit/${serviceId}`);
   }, []);
 
   const handleDelete = useCallback(async () => {
@@ -75,12 +75,12 @@ export function ServicesTable() {
     try {
       const response = await serviceService.deleteService(deleteId);
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+      if (response.status === 204) {
+        setServices((prev) =>
+          prev.filter((service) => service.id !== deleteId)
+        );
+        setSuccessMessage("Service deleted successfully");
       }
-
-      setServices((prev) => prev.filter((service) => service.id !== deleteId));
-      setSuccessMessage("Service deleted successfully");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to delete service");
     } finally {
@@ -189,6 +189,7 @@ export function ServicesTable() {
         </Table>
       )}
 
+      {/* Delete  */}
       <AlertDialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
