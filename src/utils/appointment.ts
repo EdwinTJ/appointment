@@ -29,12 +29,17 @@ export interface DBAppointment {
   phone: string;
   services: AppointmentService[];
 }
+export type AppointmentStatus =
+  | "pending"
+  | "confirmed"
+  | "completed"
+  | "cancelled";
 
 export interface TransformedAppointment {
   id: number;
   date: Date;
   time: string;
-  status: "pending" | "confirmed" | "completed" | "cancelled";
+  status: AppointmentStatus;
   totalAmount: number;
   customer: {
     id: number;

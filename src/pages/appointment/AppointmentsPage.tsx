@@ -17,8 +17,15 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
 import { Calendar, Clock, User, Mail, Phone } from "lucide-react";
-import { TransformedAppointment } from "@/utils/appointment";
-
+import { TransformedAppointment, AppointmentStatus } from "@/utils/appointment";
+import { bookingService } from "@/services/bookingService";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 const statusColors = {
   pending: "bg-yellow-100 text-yellow-800",
   confirmed: "bg-green-100 text-green-800",
@@ -55,6 +62,31 @@ export default function AppointmentsPage({ stylistId }: AppointmentsPageProps) {
 
     fetchAppointments();
   }, [stylistId]);
+
+  const handleStatusChange = async (
+    appointmentId: number,
+    newStatus: AppointmentStatus
+  ) => {
+    try {
+      await bookingService.updateAppointmentStatus(
+        appointmentId,
+        newStatus as any
+      );
+
+      // Update the appointments list with the new status
+      setAppointments(
+        appointments.map((apt) =>
+          apt.id === appointmentId
+            ? { ...apt, status: newStatus as AppointmentStatus }
+            : apt
+        )
+      );
+
+      alert();
+    } catch (error) {
+      console.error("Error updating status:", error);
+    }
+  };
 
   if (loading) {
     return (
@@ -143,9 +175,32 @@ export default function AppointmentsPage({ stylistId }: AppointmentsPageProps) {
                     </div>
                   </TableCell>
                   <TableCell>
-                    <Badge className={statusColors[appointment.status]}>
-                      {appointment.status}
-                    </Badge>
+                    <Select
+                      defaultValue={appointment.status}
+                      onValueChange={(value) =>
+                        handleStatusChange(appointment.id, value)
+                      }
+                    >
+                      <SelectTrigger className="w-[130px]">
+                        <SelectValue>
+                          <Badge
+                            className={
+                              statusColors[
+                                appointment.status as keyof typeof statusColors
+                              ]
+                            }
+                          >
+                            {appointment.status}
+                          </Badge>
+                        </SelectValue>
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="pending">Pending</SelectItem>
+                        <SelectItem value="confirmed">Confirmed</SelectItem>
+                        <SelectItem value="completed">Completed</SelectItem>
+                        <SelectItem value="cancelled">Cancelled</SelectItem>
+                      </SelectContent>
+                    </Select>{" "}
                   </TableCell>
                   <TableCell className="text-right">
                     ${Number(appointment.totalAmount).toFixed(2)}

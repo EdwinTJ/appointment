@@ -120,4 +120,32 @@ export const bookingService = {
       throw error;
     }
   },
+
+  // Add this to your bookingService
+  async updateAppointmentStatus(
+    appointmentId: number,
+    status: "pending" | "confirmed" | "completed" | "cancelled"
+  ): Promise<Appointment> {
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/appointments/${appointmentId}/status`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ status }),
+        }
+      );
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message);
+      }
+      return response.json();
+    } catch (error) {
+      console.error("Error in updateAppointmentStatus:", error);
+      throw error;
+    }
+  },
 };

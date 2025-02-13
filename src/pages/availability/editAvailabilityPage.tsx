@@ -100,7 +100,6 @@ export function EditAvailabilityPage() {
 
       try {
         const availability = await availabilityService.getById(id);
-        console.log("Fetched availability:", availability); // Add this for debugging
 
         // Add null checks and data validation
         if (availability && availability.date) {
@@ -117,7 +116,6 @@ export function EditAvailabilityPage() {
         setSelectedTimeSlots(new Set(timeSlots));
         setSelectedPeriods(determineSelectedPeriods(timeSlots));
       } catch (err) {
-        console.error("Error fetching availability:", err); // Add this for debugging
         setError(
           err instanceof Error ? err.message : "Failed to fetch availability"
         );
