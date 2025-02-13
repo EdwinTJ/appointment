@@ -19,6 +19,7 @@ import { CustomerListPage } from "./pages/customer/CustomerListPage";
 import AppointmentsPage from "./pages/appointment/AppointmentsPage";
 import { BookingConfirmationPage } from "./pages/appointment/BookingConfirmationPage";
 import { EditServicePage } from "./pages/services/EditServicePage";
+import { EditStylistPage } from "./pages/stylist/EditStylistPage";
 function App() {
   const [isAdmin] = useState(true);
 
@@ -49,8 +50,7 @@ function App() {
             {/* Stylist Routes */}
             <Route path="stylist/add" element={<AddStylist />} />
             <Route path="stylist/list" element={<StylistListPage />} />
-            <Route path="stylist/edit" element={<div>Edit Stylist</div>} />
-            <Route path="stylist/delete" element={<div>Delete Stylist</div>} />
+            <Route path="stylist/edit/:id" element={<EditStylistPage />} />
 
             {/* Availability Routes */}
             <Route path="availability/add" element={<AddAvailabilityPage />} />
@@ -62,19 +62,11 @@ function App() {
               path="availability/edit"
               element={<div>Edit Availability</div>}
             />
-            <Route
-              path="availability/delete"
-              element={<div>Delete Availability</div>}
-            />
 
             {/* Customer Routes */}
             <Route path="customers/add" element={<AddUser />} />
             <Route path="customers/list" element={<CustomerListPage />} />
             <Route path="customers/edit" element={<div>Edit Customer</div>} />
-            <Route
-              path="customers/delete"
-              element={<div>Delete Customer</div>}
-            />
             {/* Appointments Routes */}
             <Route
               path="appointments/list"
@@ -85,7 +77,6 @@ function App() {
             <Route path="services/list" element={<ServicesTable />} />
             <Route path="services/add" element={<AddService />} />
             <Route path="services/edit/:id" element={<EditServicePage />} />
-            <Route path="services/delete" element={<div>Delete Service</div>} />
           </Route>
         </Routes>
       </CartProvider>

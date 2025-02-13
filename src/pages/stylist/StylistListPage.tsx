@@ -21,53 +21,35 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useNavigate } from "react-router-dom";
-
-export interface Stylist {
-  id?: string;
-  email: string;
-  password: string;
-  firstName: string;
-  lastName: string;
-  phone: string;
-  createdAt?: Date;
-  updatedAt?: Date;
-}
+import { Stylist } from "../../utils/stylist";
+import { stylistService } from "@/services/stylistService";
+import { User, Mail, Phone } from "lucide-react";
 
 export function StylistListPage() {
-  const [stylist, setStylist] = useState<Stylist[]>([]);
+  const [stylists, setStylists] = useState<Stylist[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const navigate = useNavigate();
-  const fetchServices = useCallback(async () => {
+
+  const fetchStylists = useCallback(async () => {
     try {
       setIsLoading(true);
       setError(null);
-      const response = await fetch("http://localhost:3000/api/stylists", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      setStylist(data);
+      const data = await stylistService.getAllStylists();
+      setStylists(data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to fetch services");
-      console.error("Error fetching services:", err);
+      setError(err instanceof Error ? err.message : "Failed to fetch stylists");
+      console.error("Error fetching stylists:", err);
     } finally {
       setIsLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    fetchServices();
-  }, [fetchServices]);
+    fetchStylists();
+  }, [fetchStylists]);
 
   // Clear success message after 3 seconds
   useEffect(() => {
@@ -79,27 +61,27 @@ export function StylistListPage() {
     }
   }, [successMessage]);
 
-  const handleEdit = useCallback((stylistId: string) => {
-    // Navigate to edit page or open modal
-    navigate(`/stylists/edit/${stylistId}`);
-  }, []);
+  const handleEdit = useCallback(
+    (stylistId: string) => {
+      navigate(`/admin/stylist/edit/${stylistId}`);
+    },
+    [navigate]
+  );
 
   const handleDelete = useCallback(async () => {
     if (!deleteId) return;
 
     try {
-      const response = await fetch(`/api/stylists/${deleteId}`, {
-        method: "DELETE",
-      });
+      const response = await stylistService.deleteStylist(deleteId);
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+      if (response.status === 204) {
+        setStylists((prev) =>
+          prev.filter((stylist) => stylist.id !== deleteId)
+        );
+        setSuccessMessage("Stylist deleted successfully");
       }
-
-      setStylist((prev) => prev.filter((service) => service.id !== deleteId));
-      setSuccessMessage("Service deleted successfully");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to delete service");
+      setError(err instanceof Error ? err.message : "Failed to delete stylist");
     } finally {
       setDeleteId(null);
     }
@@ -132,13 +114,13 @@ export function StylistListPage() {
       )}
 
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-bold">Services</h2>
+        <h2 className="text-2xl font-bold">Stylists</h2>
         <Button onClick={handleAdd}>
           <PlusCircle className="mr-2 h-4 w-4" /> Add stylists
         </Button>
       </div>
 
-      {stylist.length === 0 ? (
+      {stylists.length === 0 ? (
         <div className="text-center py-8 text-gray-500">
           No services found. Add a new stylists to get started.
         </div>
@@ -146,19 +128,31 @@ export function StylistListPage() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Name</TableHead>
-              <TableHead>Email</TableHead>
-              <TableHead>Phone</TableHead>
+              <TableHead>
+                {" "}
+                <User className="h-4 w-4" />
+                <span className="text-sm">Name</span>
+              </TableHead>
+              <TableHead>
+                {" "}
+                <Mail className="h-4 w-4" />
+                <span className="text-sm">Email</span>
+              </TableHead>
+              <TableHead>
+                {" "}
+                <Phone className="h-4 w-4" />
+                <span className="text-sm">Phone</span>
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {stylist.map((stylist) => (
+            {stylists.map((stylist) => (
               <TableRow key={stylist.id}>
                 <TableCell className="font-medium">
                   {stylist.firstName}
                 </TableCell>
                 <TableCell>{stylist.email}</TableCell>
-                <TableCell>${stylist.phone}</TableCell>
+                <TableCell>{stylist.phone}</TableCell>
                 <TableCell></TableCell>
                 <TableCell className="text-right">
                   <Button

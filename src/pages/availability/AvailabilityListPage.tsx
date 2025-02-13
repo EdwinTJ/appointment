@@ -23,8 +23,14 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import type { Availability } from "@/types/availability";
+// import type { Availability } from "../../utils/availability";
 
+export interface Availability {
+  id?: string;
+  date: Date;
+  timeSlots: string[];
+  stylist?: string;
+}
 export function AvailabilityListPage() {
   const [availabilities, setAvailabilities] = useState<Availability[]>([]);
   const [isLoading, setIsLoading] = useState(true);

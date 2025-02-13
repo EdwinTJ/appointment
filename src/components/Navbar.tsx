@@ -14,27 +14,27 @@ const navItems = [
   {
     title: "Stylist",
     icon: User,
-    subitems: ["list", "add", "delete", "edit"],
+    subitems: ["list", "add"],
   },
   {
     title: "Availability",
     icon: Calendar,
-    subitems: ["list", "add", "delete", "edit"],
+    subitems: ["list", "add"],
   },
   {
     title: "Customers",
     icon: Users,
-    subitems: ["list", "add", "delete", "edit"],
+    subitems: ["list", "add"],
   },
   {
     title: "Services",
     icon: Scissors,
-    subitems: ["list", "add", "delete", "edit"],
+    subitems: ["list", "add"],
   },
   {
     title: "Appointments",
     icon: Calendar,
-    subitems: ["list", "add", "delete", "edit"],
+    subitems: ["list", "add"],
   },
 ];
 
