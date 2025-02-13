@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { Calendar } from "@/components/ui/calendar";
 import {
   Card,
@@ -9,8 +10,9 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { availabilityService } from "@/services/availabilityService";
-import { useNavigate } from "react-router-dom";
+
 type TimePeriod = "morning" | "afternoon" | "evening" | "night";
 
 interface TimeSlot {
@@ -62,14 +64,70 @@ const generateTimeSlots = (period: TimePeriod): TimeSlot[] => {
   return slots;
 };
 
-export function AddAvailabilityPage() {
+// Helper function to determine which periods contain the selected time slots
+const determineSelectedPeriods = (timeSlots: string[]): TimePeriod[] => {
+  const periods = new Set<TimePeriod>();
+
+  timeSlots.forEach((timeSlot) => {
+    const hour = parseInt(timeSlot.split(":")[0]);
+    const meridian = timeSlot.includes("PM") ? "PM" : "AM";
+    const hour24 = meridian === "PM" && hour !== 12 ? hour + 12 : hour;
+
+    if (hour24 >= 6 && hour24 < 12) periods.add("morning");
+    else if (hour24 >= 12 && hour24 < 17) periods.add("afternoon");
+    else if (hour24 >= 17 && hour24 < 21) periods.add("evening");
+    else if (hour24 >= 21) periods.add("night");
+  });
+
+  return Array.from(periods);
+};
+
+export function EditAvailabilityPage() {
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedPeriods, setSelectedPeriods] = useState<TimePeriod[]>([]);
   const [selectedTimeSlots, setSelectedTimeSlots] = useState<Set<string>>(
     new Set()
   );
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchAvailability = async () => {
+      if (!id) return;
+
+      try {
+        const availability = await availabilityService.getById(id);
+        console.log("Fetched availability:", availability); // Add this for debugging
+
+        // Add null checks and data validation
+        if (availability && availability.date) {
+          setSelectedDate(new Date(availability.date));
+        }
+
+        // Ensure timeSlots is an array before using it
+        const timeSlots = Array.isArray(availability.time_slots)
+          ? availability.time_slots
+          : Array.isArray(availability.timeSlots)
+          ? availability.timeSlots
+          : [];
+
+        setSelectedTimeSlots(new Set(timeSlots));
+        setSelectedPeriods(determineSelectedPeriods(timeSlots));
+      } catch (err) {
+        console.error("Error fetching availability:", err); // Add this for debugging
+        setError(
+          err instanceof Error ? err.message : "Failed to fetch availability"
+        );
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchAvailability();
+  }, [id]);
 
   const allTimeSlots = selectedPeriods.flatMap(generateTimeSlots);
 
@@ -80,6 +138,7 @@ export function AddAvailabilityPage() {
         : [...current, period]
     );
   };
+
   const handleTimeSlotToggle = (timeSlot: string) => {
     setSelectedTimeSlots((current) => {
       const newSet = new Set(current);
@@ -92,37 +151,59 @@ export function AddAvailabilityPage() {
     });
   };
 
-  const handleSave = async () => {
-    if (!selectedDate) return;
+  const handleUpdate = async () => {
+    if (!selectedDate || !id) return;
 
     setIsLoading(true);
     try {
-      const availability = {
+      const updatedAvailability = {
         date: selectedDate,
         timeSlots: Array.from(selectedTimeSlots),
       };
 
-      const response = await availabilityService.create(availability);
-      alert(`Saved availability: ${response.id} - ${response.date}`);
+      await availabilityService.update(id, updatedAvailability);
+      setSuccessMessage("Availability updated successfully");
 
-      // Reset form
-      setSelectedDate(null);
-      setSelectedPeriods([]);
-      setSelectedTimeSlots(new Set());
-    } catch (error) {
-      console.error("Error saving availability:", error);
+      // Navigate back after short delay
+      setTimeout(() => {
+        navigate("/admin/availability/list");
+      }, 1500);
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "Failed to update availability"
+      );
     } finally {
       setIsLoading(false);
     }
   };
 
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <p className="text-gray-500">Loading availability...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="container mx-auto py-8">
       <div className="max-w-4xl mx-auto space-y-6">
+        {error && (
+          <Alert variant="destructive">
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
+
+        {successMessage && (
+          <Alert>
+            <AlertDescription>{successMessage}</AlertDescription>
+          </Alert>
+        )}
+
         <Card>
           <CardHeader>
             <CardTitle className="flex justify-center">
-              Add Availability
+              Edit Availability
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -138,7 +219,6 @@ export function AddAvailabilityPage() {
                   className="rounded-md border"
                 />
               </div>
-              `
             </div>
 
             {selectedDate && (
@@ -215,9 +295,9 @@ export function AddAvailabilityPage() {
               disabled={
                 !selectedDate || selectedTimeSlots.size === 0 || isLoading
               }
-              onClick={handleSave}
+              onClick={handleUpdate}
             >
-              {isLoading ? "Saving..." : "Save Availability"}
+              {isLoading ? "Updating..." : "Update Availability"}
             </Button>
           </CardFooter>
         </Card>

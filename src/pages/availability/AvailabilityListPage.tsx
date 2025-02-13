@@ -71,6 +71,13 @@ export function AvailabilityListPage() {
     }
   }, [successMessage]);
 
+  const handleEdit = useCallback(
+    (availabilityId: string) => {
+      navigate(`/admin/availability/edit/${availabilityId}`);
+    },
+    [navigate]
+  );
+
   const handleDelete = useCallback(async () => {
     if (!deleteId) return;
 
@@ -154,9 +161,7 @@ export function AvailabilityListPage() {
                     variant="outline"
                     size="sm"
                     className="mr-2"
-                    onClick={() =>
-                      navigate(`/admin/availability/edit/${availability.id}`)
-                    }
+                    onClick={() => handleEdit(availability.id)}
                   >
                     <Pencil className="h-4 w-4" />
                     <span className="sr-only">

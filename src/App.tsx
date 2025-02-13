@@ -20,6 +20,7 @@ import AppointmentsPage from "./pages/appointment/AppointmentsPage";
 import { BookingConfirmationPage } from "./pages/appointment/BookingConfirmationPage";
 import { EditServicePage } from "./pages/services/EditServicePage";
 import { EditStylistPage } from "./pages/stylist/EditStylistPage";
+import { EditAvailabilityPage } from "./pages/availability/editAvailabilityPage";
 function App() {
   const [isAdmin] = useState(true);
 
@@ -59,8 +60,8 @@ function App() {
               element={<AvailabilityListPage />}
             />
             <Route
-              path="availability/edit"
-              element={<div>Edit Availability</div>}
+              path="availability/edit/:id"
+              element={<EditAvailabilityPage />}
             />
 
             {/* Customer Routes */}

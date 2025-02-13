@@ -19,7 +19,7 @@ export const availabilityService = {
   async getAvailabilityByStylistId(stylistId: number) {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/availability/${stylistId}`
+        `http://localhost:3000/api/availability/stylist/${stylistId}`
       );
 
       if (!response.ok) {
