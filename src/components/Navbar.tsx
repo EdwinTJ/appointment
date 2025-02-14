@@ -58,14 +58,14 @@ export default function Navbar({ isOpen, toggleSidebar }: NavbarProps) {
     <>
       <button
         onClick={toggleSidebar}
-        className="fixed top-4 left-4 z-20 p-2 bg-white rounded-md shadow-md lg:hidden"
+        className="fixed top-4 left-4 z-50 p-2 bg-white rounded-md shadow-md lg:hidden"
       >
         {isOpen ? <X size={24} /> : <Menu size={24} />}
       </button>
       <nav
-        className={`fixed top-0 left-0 h-full bg-white shadow-lg transition-all duration-300 ease-in-out z-10 ${
+        className={`fixed top-0 left-0 h-screen bg-white shadow-lg transition-all duration-300 ease-in-out z-40 ${
           isOpen ? "w-64" : "w-0"
-        } lg:w-64 overflow-hidden`}
+        } lg:w-64 overflow-hidden overflow-y-auto`}
       >
         <div className="p-4 min-w-64">
           <h2 className="text-2xl font-bold text-gray-800 lg:mt-0 mt-10">
