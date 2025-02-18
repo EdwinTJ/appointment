@@ -60,4 +60,35 @@ export const stylistService = {
       throw error;
     }
   },
+
+  // Add to stylistController.ts
+  loginStylist: async (req: Request, res: Response) => {
+    try {
+      const { email, password } = req.body;
+
+      // Get stylist by email
+      const stylist = await stylistModel.getByEmail(email);
+      if (!stylist) {
+        return res.status(401).json({ message: "Invalid credentials" });
+      }
+
+      // Compare password
+      const isValidPassword = await comparePassword(password, stylist.password);
+      if (!isValidPassword) {
+        return res.status(401).json({ message: "Invalid credentials" });
+      }
+
+      // Remove password from response
+      const { password: _, ...stylistResponse } = stylist;
+
+      // Here you might want to generate and return a JWT token
+      res.status(200).json(stylistResponse);
+    } catch (error) {
+      console.error("Error logging in:", error);
+      res.status(500).json({
+        message: "Error logging in",
+        error: error instanceof Error ? error.message : "Unknown error",
+      });
+    }
+  },
 };

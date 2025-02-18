@@ -6,6 +6,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { ArrowLeft, Save } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export function EditStylistPage() {
   const { id } = useParams<{ id: string }>();
@@ -15,10 +22,18 @@ export function EditStylistPage() {
     firstName: "",
     lastName: "",
     phone: "",
+    role: "stylist",
   });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  const handleRoleChange = (value: string) => {
+    setStylist((prev) => ({
+      ...prev,
+      role: value,
+    }));
+  };
 
   useEffect(() => {
     const fetchStylist = async () => {
@@ -30,6 +45,7 @@ export function EditStylistPage() {
           firstName: data.firstName,
           lastName: data.lastName,
           phone: data.phone,
+          role: data.role,
         });
       } catch (err) {
         setError(
@@ -176,6 +192,18 @@ export function EditStylistPage() {
             />
           </div>
 
+          <div className="space-y-2">
+            <Label htmlFor="role">Role</Label>
+            <Select value={stylist.role} onValueChange={handleRoleChange}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select role" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="admin">Admin</SelectItem>
+                <SelectItem value="stylist">Stylist</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
           <div className="flex justify-end pt-4">
             <Button type="submit" className="w-full sm:w-auto">
               <Save className="h-4 w-4 mr-2" />

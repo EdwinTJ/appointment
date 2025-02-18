@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   ChevronDown,
@@ -8,8 +8,10 @@ import {
   Scissors,
   Menu,
   X,
+  LogOut,
 } from "lucide-react";
 
+import { useNavigate } from "react-router-dom";
 const navItems = [
   {
     title: "Stylist",
@@ -43,8 +45,16 @@ interface NavbarProps {
   toggleSidebar: () => void;
 }
 
+interface StylistInfo {
+  firstName: string;
+  lastName: string;
+  role: string;
+}
+
 export default function Navbar({ isOpen, toggleSidebar }: NavbarProps) {
   const [openItems, setOpenItems] = useState<string[]>([]);
+  const [stylistInfo, setStylistInfo] = useState<StylistInfo | null>(null);
+  const navigate = useNavigate();
 
   const toggleItem = (title: string) => {
     setOpenItems((prev) =>
@@ -52,6 +62,26 @@ export default function Navbar({ isOpen, toggleSidebar }: NavbarProps) {
         ? prev.filter((item) => item !== title)
         : [...prev, title]
     );
+  };
+
+  useEffect(() => {
+    const storedStylist = localStorage.getItem("stylist");
+    if (storedStylist) {
+      const parsedStylist = JSON.parse(storedStylist);
+      setStylistInfo({
+        firstName: parsedStylist.firstName,
+        lastName: parsedStylist.lastName,
+        role: parsedStylist.role,
+      });
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("stylist");
+    localStorage.removeItem("isAuthenticated");
+    localStorage.removeItem("isAdmin");
+    localStorage.removeItem("role");
+    navigate("/");
   };
 
   return (
@@ -71,6 +101,21 @@ export default function Navbar({ isOpen, toggleSidebar }: NavbarProps) {
           <h2 className="text-2xl font-bold text-gray-800 lg:mt-0 mt-10">
             Admin Dashboard
           </h2>
+          {stylistInfo && (
+            <div className="mt-4 p-3 bg-gray-50 rounded-lg">
+              <div className="flex items-center space-x-2">
+                <User className="h-5 w-5 text-gray-500" />
+                <div>
+                  <p className="text-sm font-medium text-gray-900">
+                    {stylistInfo.firstName} {stylistInfo.lastName}
+                  </p>
+                  <p className="text-xs text-gray-500 capitalize">
+                    {stylistInfo.role}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
         <ul className="space-y-2 p-4 min-w-64">
           {navItems.map((item) => (
@@ -106,6 +151,16 @@ export default function Navbar({ isOpen, toggleSidebar }: NavbarProps) {
             </li>
           ))}
         </ul>
+
+        <div className="p-4 min-w-64">
+          <button
+            onClick={handleLogout}
+            className="flex items-center justify-center w-full p-2 text-red-600 hover:bg-red-50 rounded-md transition-colors"
+          >
+            <LogOut className="h-4 w-4 mr-2" />
+            Logout
+          </button>
+        </div>
       </nav>
     </>
   );

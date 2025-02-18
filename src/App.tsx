@@ -22,8 +22,6 @@ import { EditServicePage } from "./pages/services/EditServicePage";
 import { EditStylistPage } from "./pages/stylist/EditStylistPage";
 import { EditAvailabilityPage } from "./pages/availability/editAvailabilityPage";
 function App() {
-  const [isAdmin] = useState(true);
-
   return (
     <Router>
       <CartProvider>
@@ -41,7 +39,7 @@ function App() {
           <Route
             path="/admin"
             element={
-              <ProtectedRoute isAdmin={isAdmin}>
+              <ProtectedRoute allowedRoles={["admin"]}>
                 <AdminLayout />
               </ProtectedRoute>
             }

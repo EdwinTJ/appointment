@@ -5,6 +5,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Loader2 } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface FormErrors {
   email?: string;
@@ -13,6 +20,7 @@ interface FormErrors {
   lastName?: string;
   phone?: string;
   general?: string;
+  role?: string;
 }
 
 export function AddStylist() {
@@ -24,6 +32,7 @@ export function AddStylist() {
     firstName: "",
     lastName: "",
     phone: "",
+    role: "stylist",
   });
 
   const validateForm = (): boolean => {
@@ -73,6 +82,13 @@ export function AddStylist() {
     }));
   };
 
+  const handleRoleChange = (value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      role: value,
+    }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -106,6 +122,7 @@ export function AddStylist() {
         firstName: "",
         lastName: "",
         phone: "",
+        role: "stylist",
       });
       setErrors({});
     } catch (error) {
@@ -213,6 +230,19 @@ export function AddStylist() {
               {errors.phone && (
                 <p className="text-sm text-red-500">{errors.phone}</p>
               )}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="role">Role</Label>
+              <Select value={formData.role} onValueChange={handleRoleChange}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select role" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="admin">Admin</SelectItem>
+                  <SelectItem value="stylist">Stylist</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
             <Button type="submit" className="w-full" disabled={isLoading}>

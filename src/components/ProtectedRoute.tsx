@@ -1,17 +1,21 @@
 // src/components/ProtectedRoute.tsx
-
-import { ReactNode } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 
 interface ProtectedRouteProps {
-  children: ReactNode;
-  isAdmin: boolean;
+  allowedRoles?: string[];
+  children?: React.ReactElement;
 }
 
-export const ProtectedRoute = ({ children, isAdmin }: ProtectedRouteProps) => {
-  if (!isAdmin) {
+export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
+  allowedRoles = ["admin"],
+  children,
+}) => {
+  const isAuthenticated = localStorage.getItem("isAuthenticated") === "true";
+  const userRole = localStorage.getItem("role");
+
+  if (!isAuthenticated || !userRole || !allowedRoles.includes(userRole)) {
     return <Navigate to="/" replace />;
   }
 
-  return <>{children}</>;
+  return children ?? <Outlet />;
 };
